@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
+    <ClInclude Include="InvertedIndexF.h" />
     <ClInclude Include="Join.h" />
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="ThreadPool.h" />

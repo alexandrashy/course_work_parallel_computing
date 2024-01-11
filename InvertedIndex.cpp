@@ -7,75 +7,24 @@
 #include <iterator>
 #include "vectorTest.h"
 #include "Header.h"
-
-// Function to tokenize a string into words
-std::vector<std::string> tokenize(const std::string& str) {
-    //std::istringstream iss(str);    
-    std::regex wordRegex(("\\b(?!<|>|\\.|/|-)([A-Za-z]+)\\b"));
-    std::smatch match;
-    std::vector<std::string> tokens;
-
-    std::string::const_iterator searchStart(str.cbegin());
-    while (std::regex_search(searchStart, str.cend(), match, wordRegex)) {
-        tokens.push_back(match[1].str());
-        searchStart = match.suffix().first;
-    }
-
-    return tokens;
-    //return { std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
-}
-
-// Function to build the inverted index
-std::unordered_map<std::string, std::vector<int>> buildInvertedIndex(const std::vector<std::string>& documents) {
-    std::unordered_map<std::string, std::vector<int>> invertedIndex;
-
-    for (int i = 0; i < documents.size(); ++i) {
-        const std::string& document = documents[i];
-        std::vector<std::string> words = tokenize(document);
-
-        for (const std::string& word : words) {
-            std::string lowercaseWord = word;
-            lowercaseWord.erase(std::remove_if(lowercaseWord.begin(), lowercaseWord.end(), [](unsigned char c) {
-                return !std::isalpha(c);
-                }), lowercaseWord.end());
-            if (lowercaseWord.size() <= 1) { continue; }
-            // Convert the word to lowercase (for case-insensitive indexing)
-            std::transform(lowercaseWord.begin(), lowercaseWord.end(), lowercaseWord.begin(), ::tolower);
-
-            // Update the inverted index
-            invertedIndex[lowercaseWord].push_back(i);
-        }
-    }
-    return invertedIndex;
-}
-
-// Function to print the inverted index
-void printInvertedIndex(const std::unordered_map<std::string, std::vector<int>>& invertedIndex) {
-    for (const auto& entry : invertedIndex) {
-        std::cout << entry.first << ": ";
-        std::cout << entry.second.size() << " - num of entry";
-        for (int docId : entry.second) {
-            std::cout << docId << " ";
-        }
-        std::cout << std::endl;
-    }
-}
-
-std::unordered_map<std::string, std::vector<int>> CretaeInvertedIndex(std::string folderPath) {
-    // token();
-    std::vector<std::string> documents = CreateVector(folderPath);
-
-    // Build the inverted index
-     std::unordered_map<std::string, std::vector<int>> invertedIndex = buildInvertedIndex(documents);
-
-    // Print the inverted index
-   // printInvertedIndex(invertedIndex);
-
-    return invertedIndex;
-}
+#include "ThreadPool.h"
 
 int main() {
-    std::unordered_map<std::string, std::vector<int>> InvertIn = CretaeInvertedIndex("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg");
-    printInvertedIndex(InvertIn);
+    //std::unordered_map<std::string, std::vector<int>> InvertIn = CretaeInvertedIndex("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg");
+    //printInvertedIndex(InvertIn);
+    std::string filepath = "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
+    thread_pool NewPool;
+    std::cout << "Created";
+    // "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
+    //aclImdb\train\unsup
+    //    aclImdb\train\pos
+    //    aclImdb\train\neg
+    //    aclImdb\test\pos
+    bool isSub = NewPool.submit(filepath);
+    NewPool.submit("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\unsup");
+    NewPool.submit("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\pos");
+    NewPool.submit("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\neg");
+
+    std::cout << isSub;
     return 0;
 }

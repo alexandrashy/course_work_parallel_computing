@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include "SafeQueue.h"
 #include "Join.h"
@@ -10,26 +9,27 @@
 #include <queue>
 #include <mutex>
 #include <memory>
+#include "InvertedIndexF.h"
 
-unsigned const thread_count = 8;
-int addedToExecution = 0;
-int ThrownTasks = 0;
+unsigned const thread_count = 20; //td::thread::hardware_concurrency()
 
 class thread_pool
 {
     std::atomic_bool done;
-    threadsafe_queue<std::function<void()> > work_queue;
-    std::vector<std::unique_ptr<threadsafe_queue<std::function<void()>>>> queues;
+    std::vector<std::unique_ptr<threadsafe_queue<std::string>>> queues;
     std::vector<std::thread> threads;
     join_threads joiner;
+    std::mutex mtx;
     void worker_thread(int i)
     {
         while (!done)
         {
-            std::function<void()> task;
+            std::string task;
             if (queues[i]->TryPop(task))
             {
-                task();
+                BoolInver(task);
+                std::cout << "taskfin";
+                queues[i]->TryPop(task);
             }
             else
             {
@@ -46,7 +46,7 @@ public:
             for (unsigned i = 0; i < thread_count; ++i)
             {
                 threads.push_back(std::thread([this, i] { worker_thread(i); }));
-                queues.push_back(std::make_unique<threadsafe_queue<std::function<void()>>>());
+                queues.push_back(std::make_unique<threadsafe_queue<std::string>>());
             }
         }
         catch (...)
@@ -60,22 +60,21 @@ public:
         done = true;
     }
     template<typename FunctionType>
-    void submit(FunctionType f, int a)
+    bool submit(FunctionType f)
     {
         for (unsigned i = 0; i < thread_count; ++i) {
             if (queues[i]->empty())
             {
-                queues[i]->push(std::function<void()>(f));
-                addedToExecution++;
-                std::cout << "Task with index " << a << " started execution\n";
-                return;
+                queues[i]->push(f);
+                queues[i]->push(f);
+                return true;
             }
             else {
-                continue;
+                std::cout << "\nno threads available\n";
+                return false;
             }
         }
-        std::cout << "All threads is busy, task with index " << a << " leave execution\n";
-        ThrownTasks++;
-
+        return false;
     }
 };
+
