@@ -135,6 +135,7 @@
     <ClInclude Include="InvertedIndexF.h" />
     <ClInclude Include="Join.h" />
     <ClInclude Include="SafeQueue.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="vectorTest.h" />
   </ItemGroup>

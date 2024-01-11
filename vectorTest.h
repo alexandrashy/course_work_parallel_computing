@@ -7,8 +7,8 @@
 #include <filesystem>
 #include <filesystem>
 
-std::vector<std::string> readDocumentsFromFile(std::vector<std::string>& filenames) {
-    std::vector<std::string> documents;
+std::unordered_map<std::string, std::vector<std::string>> readDocumentsFromFile(std::vector<std::string>& filenames) {
+    std::unordered_map<std::string, std::vector<std::string>> documents;
     for (const auto& filename : filenames) {
         std::ifstream file(filename);
 
@@ -18,7 +18,7 @@ std::vector<std::string> readDocumentsFromFile(std::vector<std::string>& filenam
         }
         std::string line;
         while (std::getline(file, line)) {
-            documents.push_back(line);
+            documents[filename].push_back(line);
         }
 
         file.close();
@@ -26,14 +26,9 @@ std::vector<std::string> readDocumentsFromFile(std::vector<std::string>& filenam
     return documents;
 }
 
-std::vector<std::string> CreateVector(std::string folderPath) {
+std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::string folderPath) {
 
     std::vector<std::string> documents;
-    // "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
-    //aclImdb\train\unsup
-    //    aclImdb\train\pos
-    //    aclImdb\train\neg
-    //    aclImdb\test\pos
     int prefix = 750;
     int suffix = 1000;
     for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
@@ -48,10 +43,14 @@ std::vector<std::string> CreateVector(std::string folderPath) {
             documents.push_back(entry.path().string());
         }
     }
-    std::vector<std::string> ReadVector = readDocumentsFromFile(documents);
     if (documents.empty()) {
         std::cerr << "No documents was found." << std::endl;
-        return { "Error" };
     }
+    std::unordered_map<std::string, std::vector<std::string>> ReadVector = readDocumentsFromFile(documents);
     return ReadVector;
 }
+// "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
+//aclImdb\train\unsup
+//    aclImdb\train\pos
+//    aclImdb\train\neg
+//    aclImdb\test\pos

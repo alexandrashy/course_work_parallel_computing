@@ -80,7 +80,5 @@ std::unordered_map<std::string, std::vector<int>> CretaeInvertedIndex(std::strin
 
 bool BoolInver(std::string filepath) {
     std::unordered_map<std::string, std::vector<int>> InvertIn = CretaeInvertedIndex(filepath);
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    printInvertedIndex(InvertIn);
     return true;
 }
