@@ -8,6 +8,7 @@
 #include <iterator>
 #include "vectorTest.h"
 
+
 // Function to tokenize a string into words
 std::vector<std::string> tokenize(const std::string& str) {
     //std::istringstream iss(str);    
@@ -20,30 +21,27 @@ std::vector<std::string> tokenize(const std::string& str) {
         tokens.push_back(match[1].str());
         searchStart = match.suffix().first;
     }
-
     return tokens;
-    //return { std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>{} };
 }
 
 // Function to build the inverted index
-std::unordered_map<std::string, std::vector<int>> buildInvertedIndex(const std::vector<std::string>& documents) {
-    std::unordered_map<std::string, std::vector<int>> invertedIndex;
+std::unordered_map<std::string, std::vector<std::string>> buildInvertedIndex(std::unordered_map<std::string, std::vector<std::string>>& documents) {
+    std::unordered_map<std::string, std::vector<std::string>> invertedIndex;
+    for (auto a = documents.begin(); a != documents.end(); a++){
+        for (int i = 0; i < a->second.size(); ++i) {
+            const std::string& document = a->second[i];
+            std::vector<std::string> words = tokenize(document);
+            for (const std::string& word : words) {
+                std::string lowercaseWord = word;
+                lowercaseWord.erase(std::remove_if(lowercaseWord.begin(), lowercaseWord.end(), [](unsigned char c) {
+                    return !std::isalpha(c);
+                    }), lowercaseWord.end());
+                if (lowercaseWord.size() <= 1) { continue; }
+                
+                std::transform(lowercaseWord.begin(), lowercaseWord.end(), lowercaseWord.begin(), ::tolower);
 
-    for (int i = 0; i < documents.size(); ++i) {
-        const std::string& document = documents[i];
-        std::vector<std::string> words = tokenize(document);
-
-        for (const std::string& word : words) {
-            std::string lowercaseWord = word;
-            lowercaseWord.erase(std::remove_if(lowercaseWord.begin(), lowercaseWord.end(), [](unsigned char c) {
-                return !std::isalpha(c);
-                }), lowercaseWord.end());
-            if (lowercaseWord.size() <= 1) { continue; }
-            // Convert the word to lowercase (for case-insensitive indexing)
-            std::transform(lowercaseWord.begin(), lowercaseWord.end(), lowercaseWord.begin(), ::tolower);
-
-            // Update the inverted index
-            invertedIndex[lowercaseWord].push_back(i);
+                invertedIndex[lowercaseWord].push_back(a->first);
+            }
         }
     }
     return invertedIndex;
@@ -65,20 +63,12 @@ void printInvertedIndex(const std::unordered_map<std::string, std::vector<int>>&
     }
 }
 
-std::unordered_map<std::string, std::vector<int>> CretaeInvertedIndex(std::string folderPath) {
+std::unordered_map<std::string, std::vector<std::string>> CreateInvertedIndex(std::string folderPath) {
     // token();
-    std::vector<std::string> documents = CreateVector(folderPath);
+    std::unordered_map<std::string, std::vector<std::string>> documents = CreateVector(folderPath);
 
     // Build the inverted index
-    std::unordered_map<std::string, std::vector<int>> invertedIndex = buildInvertedIndex(documents);
-
-    // Print the inverted index
-   // printInvertedIndex(invertedIndex);
+    std::unordered_map<std::string, std::vector<std::string>> invertedIndex = buildInvertedIndex(documents);
 
     return invertedIndex;
-}
-
-bool BoolInver(std::string filepath) {
-    std::unordered_map<std::string, std::vector<int>> InvertIn = CretaeInvertedIndex(filepath);
-    return true;
 }

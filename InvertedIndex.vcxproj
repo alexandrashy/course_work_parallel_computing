@@ -137,6 +137,7 @@
     <ClInclude Include="SafeQueue.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="ThreadPool.h" />
+    <ClInclude Include="UserDataStructure.h" />
     <ClInclude Include="vectorTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

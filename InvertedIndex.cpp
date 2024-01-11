@@ -13,10 +13,11 @@
 #include "vectorTest.h"
 #include "Header.h"
 #include "ThreadPool.h"
+#include "UserDataStructure.h"
 #pragma comment(lib, "ws2_32.lib") 
 
 
-std::string handleClient(SOCKET clientSocket) {
+USER_DATA handleClient(SOCKET clientSocket) {
     // Receive the message from the client
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
@@ -24,22 +25,29 @@ std::string handleClient(SOCKET clientSocket) {
 
     if (bytesRead == -1) {
         std::cerr << "Error receiving message from client" << std::endl;
-        return "0";
+        
     }
     else if (bytesRead == 0) {
         std::cout << "Client disconnected" << std::endl;
-        return "0";
+        
     }
     else {
         std::string receivedMessage(buffer, bytesRead);
         std::cout << "Received message from client: " << receivedMessage << std::endl;
-        return receivedMessage;
-    }
-    return "0";
-}
+        std::stringstream ss(receivedMessage);
+        USER_DATA user;
 
-int HandleClientsMap(std::unordered_map<SOCKET, std::string>& ClientMap) {
-    return 1;
+        std::string word;
+        std::vector<std::string> words;
+
+        while (ss >> word) {
+            words.push_back(word);
+        }
+        user.Path = words[1];
+        user.USER_NAME = words[0];
+
+        return user;
+    }
 }
 
 
@@ -117,19 +125,15 @@ int main() {
         if (send(clientSocket, message.c_str(), strlen(message.c_str()), 0) == SOCKET_ERROR) {
             std::cerr << "Error sending message" << std::endl;
         }
-        std::string ReceivedPath = handleClient(clientSocket);
-        ClientMap[clientSocket] = ReceivedPath;
-        bool isSub = NewPool.submit(ReceivedPath);
-        std::cout << "Received Path - " << ReceivedPath << isSub << "\n";
+        USER_DATA ReceivedData = handleClient(clientSocket);
+        bool isSub = NewPool.submit(ReceivedData);
+        std::cout << "Received Path - " << ReceivedData.Path << isSub << "\n";
+        closesocket(clientSocket);
 
     }
-    for (const auto& entry : ClientMap) {
-        closesocket(entry.first);
-    }
-    //closesocket(clientSocket);
+
     closesocket(serverSocket);
 
-    
     WSACleanup();
 
     return 0;
