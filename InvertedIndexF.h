@@ -66,12 +66,14 @@ void printInvertedIndex(const std::unordered_map<std::string, std::vector<int>>&
     }
 }
 
-std::unordered_map<std::string, std::vector<std::string>> CreateInvertedIndex(std::string folderPath) {
+std::unordered_map<std::string, std::vector<std::string>> CreateInvertedIndex(std::string folderPath, int i, int child_threads_count) {
     // token();
-    std::unordered_map<std::string, std::vector<std::string>> documents = CreateVector(folderPath);
+    std::unordered_map<std::string, std::vector<std::string>> documents = CreateVector(folderPath, i, child_threads_count);
+    //(std::string folderPath, int numOfThread, int delimeter)
 
     // Build the inverted index
     std::unordered_map<std::string, std::vector<std::string>> invertedIndex = buildInvertedIndex(documents);
+    std::cout << "Yes";
 
     return invertedIndex;
 }

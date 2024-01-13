@@ -14,6 +14,7 @@
 #include "Header.h"
 #include "ThreadPool.h"
 #include "UserDataStructure.h"
+#include <filesystem>
 #pragma comment(lib, "ws2_32.lib") 
 
 
@@ -34,8 +35,8 @@ USER_DATA handleClient(SOCKET clientSocket) {
         std::string receivedMessage(buffer, bytesRead);
         std::cout << "Received message from client: " << receivedMessage << std::endl;
         std::stringstream ss(receivedMessage);
+        
         USER_DATA user;
-
         std::string word;
         std::vector<std::string> words;
 
@@ -51,19 +52,17 @@ USER_DATA handleClient(SOCKET clientSocket) {
 
 
 // Function to generate a random message
-std::string generateRandomMessage() {
-    const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const int charsetSize = sizeof(charset) - 1;
-    const int messageLength = 10; // Adjust the length as needed
-
-    srand(static_cast<unsigned>(time(NULL)));
-
-    std::string randomMessage;
-    for (int i = 0; i < messageLength; ++i) {
-        randomMessage += charset[rand() % charsetSize];
+std::string RandomStr(long int n) {
+    srand(time(NULL));
+    std::string StringRev;
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> distribution(97, 122);
+    // Use a while loop together with the getline() function to read the file line by line
+    for (int i = 0; i < n; ++i) {
+        char c = distribution(rng); // Generate a random character
+        StringRev += c;
     }
-
-    return randomMessage;
+    return StringRev;
 }
 
 bool SendClientData(SOCKET clientSocket, std::string& message) {
@@ -161,35 +160,62 @@ int parallel() {
     //● aclImdb\train\unsup – N = 50000 файлів.
     thread_pool NewPool;
     std::vector<USER_DATA> users = {
-        {"sasha", "datasets\\aclimdb\\aclimdb\\test\\neg"},
-        {"alex", "datasets\\aclimdb\\aclimdb\\test\\pos"},
-        {"oleksadnra", "datasets\\aclimdb\\aclimdb\\train\\neg"},
-        {"alexandra", "datasets\\aclimdb\\aclimdb\\train\\pos"},
-        {"alexandra", "datasets\\aclimdb\\aclimdb\\train\\unsup"}
+        {"C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\aclImdb\\test\\neg", "sasha"},
+        {"datasets\\aclimdb\\aclimdb\\test\\pos", "alex"},
+        {"datasets\\aclimdb\\aclimdb\\train\\neg","oleksadnra"},
+        {"datasets\\aclimdb\\aclimdb\\train\\pos", "alexandra"},
+        {"datasets\\aclimdb\\aclimdb\\train\\unsup", "aleksandra"}
     };
     //for (const auto& User: Users) {
     //    NewPool.submit(User);
     //}
-    for (int i = 0; i <= 10; i++) {
-        std::string USER_NAME = generateRandomMessage();
-        std::mt19937 rng(std::random_device{}());
-        std::uniform_int_distribution<int> distribution(0, 4);
-        int random_number = distribution(rng);
-        USER_DATA User(users[random_number].Path, USER_NAME);
-        NewPool.submit(User);
+    int count = 5;
+    thread_count = 5; //td::thread::hardware_concurrency()
+    child_threads_count = 3;
+    auto payload_begin = high_resolution_clock::now();
+    std::string UserName;
+    std::vector<std::string> clients;
+    for (int i = 0; i < users.size(); i++) {
+        USER_DATA User = users[i];
+        //std::cout << User.Path << User.USER_NAME << "\n";
+        if (std::find(clients.begin(), clients.end(), User.USER_NAME) != clients.end()) {
+            std::cout << "The user already exists, try another username";
+        }
+        else {
+            if (NewPool.submit(User)) {
+                clients.push_back(UserName);
+                std::cout << "Received Path - " + User.Path + " added to execution\n";
+            }
+            else {
+                std::cout << "The server are unavailable\n";
+            }
+        }
     }
+    //NewPool.submit(users[0]);
+    //std::this_thread::sleep_for(std::chrono::seconds(50));
+    std::filesystem::path DirectoryPath = "users_data\\";
+    std::cout << "here" << "\n";
+    while (std::distance(std::filesystem::directory_iterator(DirectoryPath), std::filesystem::directory_iterator{}) != count) {
+        continue;
+    }
+    auto payload_end = high_resolution_clock::now();
+    
+    auto elapsed = duration_cast<nanoseconds>(payload_end - payload_begin);
+    std::cout << "\nPayload Time: " << elapsed.count() * 1e-9 << " seconds.\n";
+    return 0;
 }
 
 int consuqence(){
 
-
+    return 0;
 
 }
 
 
 
 int main() {
-
+    parallel();
+    return 0;
 }
 
 

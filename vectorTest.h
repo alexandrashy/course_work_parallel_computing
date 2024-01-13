@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <filesystem>
 
-std::unordered_map<std::string, std::vector<std::string>> readDocumentsFromFile(std::vector<std::string>& filenames) {
+std::unordered_map<std::string, std::vector<std::string>> readDocumentsFromFile(std::vector<std::string> filenames) {
     std::unordered_map<std::string, std::vector<std::string>> documents;
     for (const auto& filename : filenames) {
         std::ifstream file(filename);
@@ -26,15 +26,32 @@ std::unordered_map<std::string, std::vector<std::string>> readDocumentsFromFile(
     return documents;
 }
 
-std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::string folderPath) {
+std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::string folderPath, int numOfThread, int delimeter) {
 
     std::vector<std::string> documents;
     int prefix = 750;
     int suffix = 1000;
-    if (folderPath == "datasets\\aclImdb\\aclImdb\\train\\unsup") {
-        prefix = 3000;
-        suffix = 4000;
+    if (delimeter != 1) {
+        prefix = 750 + numOfThread * (250 / delimeter);
+        suffix = 750 + (numOfThread + 1) * (250 / delimeter) - 1;
+        if (numOfThread == delimeter - 1) {
+            suffix += 1;
+            if (delimeter % 2) {
+                suffix += 1;
+            }
+        }
     }
+    if (folderPath == "datasets\\aclImdb\\aclImdb\\train\\unsup") {
+        prefix = 3000 + numOfThread * (1000 / delimeter);
+        suffix = 3000 + (numOfThread + 1) * (1000 / delimeter) - 1;
+        if (numOfThread == delimeter - 1) {
+            suffix += 1;
+            if (delimeter % 2) {
+                suffix += 1;
+            }
+        }
+    }
+    std::cout << "from vector ===" << prefix << "===" << suffix <<"\n";
     for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
         std::string filename = entry.path().filename().string();
         size_t pos = filename.find_first_of("_");
@@ -50,6 +67,7 @@ std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::stri
     if (documents.empty()) {
         std::cerr << "No documents was found." << std::endl;
     }
+    std::cout << documents.size() << "size\n";
     std::unordered_map<std::string, std::vector<std::string>> ReadVector = readDocumentsFromFile(documents);
     return ReadVector;
 }
