@@ -18,7 +18,6 @@
 
 
 USER_DATA handleClient(SOCKET clientSocket) {
-    // Receive the message from the client
     char buffer[1024];
     memset(buffer, 0, sizeof(buffer));
     size_t bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
@@ -69,7 +68,7 @@ std::string generateRandomMessage() {
 
 int main() {
     thread_pool NewPool;
-    std::unordered_map<SOCKET, std::string> ClientMap;
+    std::vector<std::string> clients;
     // Initialize Winsock
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -126,10 +125,16 @@ int main() {
             std::cerr << "Error sending message" << std::endl;
         }
         USER_DATA ReceivedData = handleClient(clientSocket);
-        bool isSub = NewPool.submit(ReceivedData);
-        std::cout << "Received Path - " << ReceivedData.Path << isSub << "\n";
+        if (std::find(clients.begin(), clients.end(), ReceivedData.USER_NAME) != clients.end()) {
+            std::cout << "The user already exists, try another username";
+        }
+        else {
+            if (NewPool.submit(ReceivedData)) {
+                clients.push_back(ReceivedData.USER_NAME);
+            }
+            std::cout << "Received Path - " << ReceivedData.Path << "added to execution" << "\n";
+        }
         closesocket(clientSocket);
-
     }
 
     closesocket(serverSocket);
@@ -158,6 +163,7 @@ int main() {
 //    thread_pool NewPool;
 //    std::cout << "Created";
 //    // "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
+//       "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\unsup"
 //    //aclImdb\train\unsup
 //    //    aclImdb\train\pos
 //    //    aclImdb\train\neg

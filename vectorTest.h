@@ -31,6 +31,10 @@ std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::stri
     std::vector<std::string> documents;
     int prefix = 750;
     int suffix = 1000;
+    if (folderPath == "datasets\\aclImdb\\train\\unsup") {
+        int prefix = 3000;
+        int suffix = 4000;
+    }
     for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
         std::string filename = entry.path().filename().string();
         size_t pos = filename.find_first_of("_");

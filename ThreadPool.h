@@ -12,7 +12,7 @@
 #include "InvertedIndexF.h"
 #include <unordered_map>
 #include "UserDataStructure.h"
-unsigned const thread_count = 10; //td::thread::hardware_concurrency()
+unsigned thread_count = 3; //td::thread::hardware_concurrency()
 
 class thread_pool
 {
@@ -29,7 +29,7 @@ class thread_pool
             if (queues[i]->TryPop(task))
             {
                 std::unordered_map<std::string, std::vector<std::string>> InvertIn = CreateInvertedIndex(task.Path);
-                std::ofstream outputFile(std::string(task.Path+"-"+ task.Path));
+                std::ofstream outputFile("users_data\\" + task.USER_NAME+".txt");
                 // Check if the file is opened successfully
 
                 for (const auto& pair : InvertIn) {
@@ -38,6 +38,7 @@ class thread_pool
                       outputFile << "\"" << chain << "\",";
                   outputFile << "\n";
                 }
+                outputFile << "\n\n";
                 outputFile.close();
                 queues[i]->TryPop(task);
             }
@@ -72,7 +73,9 @@ public:
     template<typename FunctionType>
     bool submit(FunctionType f)
     {
-        for (unsigned i = 0; i < thread_count; ++i) {
+        
+        std::cout << "DATA" << thread_count;
+        for (unsigned int i = 0; i < thread_count; ++i) {
             if (queues[i]->empty())
             {
                 queues[i]->push(f);
@@ -80,10 +83,10 @@ public:
                 return true;
             }
             else {
-                std::cout << "\nno threads available\n";
-                return false;
+                continue;
             }
         }
+        std::cout << "\nno threads available\n";
         return false;
     }
 };
