@@ -74,7 +74,8 @@ bool SendClientData(SOCKET clientSocket, std::string& message) {
      return false;
 }
 
-int main() {
+
+int server() {
     thread_pool NewPool;
     std::vector<std::string> clients;
     // Initialize Winsock
@@ -94,11 +95,11 @@ int main() {
 
     sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_addr.s_addr = INADDR_ANY; 
+    serverAddress.sin_addr.s_addr = INADDR_ANY;
     serverAddress.sin_port = htons(8080);
 
     if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
-        std::cerr << "Error binding socket" << std::endl;
+        std::cerr << "Error binding socket\n";
         closesocket(serverSocket);
         WSACleanup();
         return -1;
@@ -106,21 +107,20 @@ int main() {
 
     // Listen for incoming connections
     if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
-        std::cerr << "Error listening for connections" << std::endl;
+        std::cerr << "Error listening for connections\n";
         closesocket(serverSocket);
         WSACleanup();
         return -1;
     }
 
-    std::cout << "Server listening on port 8080..." << std::endl;
-    std::thread clientThread();
+    std::cout << "Server listening on port 8080...\n";
     // Accept a connection from a client
-    while(true){
+    while (true) {
         sockaddr_in clientAddress;
         int clientAddressLength = sizeof(clientAddress);
         SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddress, &clientAddressLength);
         if (clientSocket == INVALID_SOCKET) {
-            std::cerr << "Error accepting connection" << std::endl;
+            std::cerr << "Error accepting connection\n";
             closesocket(serverSocket);
             WSACleanup();
             return -1;
@@ -135,12 +135,11 @@ int main() {
         else {
             if (NewPool.submit(ReceivedData)) {
                 clients.push_back(ReceivedData.USER_NAME);
-                Message = "Received Path - " + ReceivedData.Path + " added to execution" + "\n";
+                Message = "Received Path - " + ReceivedData.Path + " added to execution\n";
             }
             else {
                 Message = "The server are unavailable\n";
             }
-            SendClientData(clientSocket, Message);
         }
         SendClientData(clientSocket, Message);
         closesocket(clientSocket);
@@ -152,6 +151,49 @@ int main() {
 
     return 0;
 }
+
+
+int parallel() {
+    //● aclImdb\test\neg – N = 12500 файлів;
+    //● aclImdb\test\pos – N = 12500 файлів;
+    //● aclImdb\train\neg – N = 12500 файлів;
+    //● aclImdb\train\pos – N = 12500 файлів;
+    //● aclImdb\train\unsup – N = 50000 файлів.
+    thread_pool NewPool;
+    std::vector<USER_DATA> users = {
+        {"sasha", "datasets\\aclimdb\\aclimdb\\test\\neg"},
+        {"alex", "datasets\\aclimdb\\aclimdb\\test\\pos"},
+        {"oleksadnra", "datasets\\aclimdb\\aclimdb\\train\\neg"},
+        {"alexandra", "datasets\\aclimdb\\aclimdb\\train\\pos"},
+        {"alexandra", "datasets\\aclimdb\\aclimdb\\train\\unsup"}
+    };
+    //for (const auto& User: Users) {
+    //    NewPool.submit(User);
+    //}
+    for (int i = 0; i <= 10; i++) {
+        std::string USER_NAME = generateRandomMessage();
+        std::mt19937 rng(std::random_device{}());
+        std::uniform_int_distribution<int> distribution(0, 4);
+        int random_number = distribution(rng);
+        USER_DATA User(users[random_number].Path, USER_NAME);
+        NewPool.submit(User);
+    }
+}
+
+int consuqence(){
+
+
+
+}
+
+
+
+int main() {
+
+}
+
+
+
 
 
 //#include <iostream>

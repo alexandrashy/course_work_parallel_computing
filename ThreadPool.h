@@ -12,7 +12,7 @@
 #include "InvertedIndexF.h"
 #include <unordered_map>
 #include "UserDataStructure.h"
-unsigned thread_count = 1; //td::thread::hardware_concurrency()
+unsigned thread_count = 2; //td::thread::hardware_concurrency()
 
 class thread_pool
 {
@@ -28,8 +28,9 @@ class thread_pool
             USER_DATA task;
             if (queues[i]->TryPop(task))
             {
-                std::chrono::seconds duration(5);
-                std::this_thread::sleep_for(duration);
+                //std::chrono::seconds duration(5);
+                //std::this_thread::sleep_for(duration);
+
                 std::unordered_map<std::string, std::vector<std::string>> InvertIn = CreateInvertedIndex(task.Path);
                 std::ofstream outputFile("users_data\\" + task.USER_NAME+".txt");
                 // Check if the file is opened successfully

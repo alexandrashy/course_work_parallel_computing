@@ -8,6 +8,9 @@
 #include <iterator>
 #include "vectorTest.h"
 
+using std::chrono::nanoseconds;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
 
 // Function to tokenize a string into words
 std::vector<std::string> tokenize(const std::string& str) {
