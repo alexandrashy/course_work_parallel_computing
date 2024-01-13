@@ -66,6 +66,14 @@ std::string generateRandomMessage() {
     return randomMessage;
 }
 
+bool SendClientData(SOCKET clientSocket, std::string& message) {
+     if (send(clientSocket, message.c_str(), strlen(message.c_str()), 0) == SOCKET_ERROR) {
+            std::cerr << "Error sending message" << std::endl;
+            return true;
+     }
+     return false;
+}
+
 int main() {
     thread_pool NewPool;
     std::vector<std::string> clients;
@@ -119,21 +127,22 @@ int main() {
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         std::cout << "Client connected" << std::endl;
-        std::string message = generateRandomMessage();
-
-        if (send(clientSocket, message.c_str(), strlen(message.c_str()), 0) == SOCKET_ERROR) {
-            std::cerr << "Error sending message" << std::endl;
-        }
         USER_DATA ReceivedData = handleClient(clientSocket);
+        std::string Message;
         if (std::find(clients.begin(), clients.end(), ReceivedData.USER_NAME) != clients.end()) {
-            std::cout << "The user already exists, try another username";
+            Message = "The user already exists, try another username";
         }
         else {
             if (NewPool.submit(ReceivedData)) {
                 clients.push_back(ReceivedData.USER_NAME);
+                Message = "Received Path - " + ReceivedData.Path + " added to execution" + "\n";
             }
-            std::cout << "Received Path - " << ReceivedData.Path << "added to execution" << "\n";
+            else {
+                Message = "The server are unavailable\n";
+            }
+            SendClientData(clientSocket, Message);
         }
+        SendClientData(clientSocket, Message);
         closesocket(clientSocket);
     }
 
