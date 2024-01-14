@@ -44,7 +44,7 @@ class GetData(Resource):
     @api.expect(get_input_model, validate=True)
     def post(self):
         args = api.payload["name"]
-        if os.path.exists(f'C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\users_data\\{args}.txt'):
+        if os.path.exists(f'\\users_data\\{args}.txt'):
             return {'message': f'File proccessed, {args}.'}
         else:
             return {'message': f'File not proccessed {args}.'}

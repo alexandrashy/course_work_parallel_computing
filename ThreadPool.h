@@ -47,7 +47,7 @@ class thread_pool
                 }
                 // Retrieve results from futures
                 for (int fut = 0; fut < child_threads_count; ++fut) {
-                    std::unordered_map<std::string, std::vector<std::string>> result = futures[fut].get();
+                    std::unordered_map<std::string, std::vector<std::string>> result = futures[fut].get(); // отримуємо дані з future
                     std::ofstream outputFile("users_data\\" + task.USER_NAME + std::to_string(fut) + ".txt", std::ios::app);
                     for (const auto& pair : result) {
                         outputFile << '"' << pair.first << "\":";

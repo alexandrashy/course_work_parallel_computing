@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cstring>
 #include <winsock2.h>
-#include<thread>
-#include<ctime>
+#include <thread>
+#include <ctime>
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
@@ -62,7 +62,7 @@ std::string RandomStr(long int n) {
     }
     return StringRev;
 }
-
+// Функція надсилання данних до клієнта
 bool SendClientData(SOCKET clientSocket, std::string& message) {
      if (send(clientSocket, message.c_str(), strlen(message.c_str()), 0) == SOCKET_ERROR) {
             std::cerr << "Error sending message" << std::endl;
@@ -75,7 +75,7 @@ bool SendClientData(SOCKET clientSocket, std::string& message) {
 int server() {
     thread_pool NewPool;
     std::vector<std::string> clients;
-    // Initialize Winsock
+    // Ініціалізація сокету у windows
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "Failed to initialize/n";
@@ -151,12 +151,8 @@ int server() {
 
 
 int parallel() {
-    //● aclImdb\test\neg – N = 12500 файлів;
-    //● aclImdb\test\pos – N = 12500 файлів;
-    //● aclImdb\train\neg – N = 12500 файлів;
-    //● aclImdb\train\pos – N = 12500 файлів;
-    //● aclImdb\train\unsup – N = 50000 файлів.
     thread_pool NewPool;
+    // Дані для обробки запитів
     std::vector<USER_DATA> users = {
         {"Cdatasets\\aclImdb\\aclImdb\\test\\neg", "sasha"},
         {"datasets\\aclimdb\\aclimdb\\test\\pos", "alex"},
@@ -186,9 +182,9 @@ int parallel() {
             }
         }
     }
-    //std::this_thread::sleep_for(std::chrono::seconds(50));
     std::filesystem::path DirectoryPath = "users_data\\";
     //std::cout << "here" << "\n";
+    // Чекаємо, поки необхідна кількість файлів не буде створена
     while (std::distance(std::filesystem::directory_iterator(DirectoryPath), std::filesystem::directory_iterator{}) != count*child_threads_count) {
         continue;
     }
@@ -202,8 +198,8 @@ int parallel() {
 
 
 int main() {
-    parallel();
-    //server();
+    //parallel();
+    server();
     return 0;
 }
 
