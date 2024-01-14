@@ -6,20 +6,6 @@
 
 # To run the python code:
 # API Invert Index
-```
-## Testing the API
-
-To test this API, you can use the interactive Swagger documentation. To do this, click on the following link:
-
-[Swagger Documentation and API Testing](http://127.0.0.1:5000/docs#/)
-
-Swagger provides a convenient interface to make requests to the API. You can check available endpoints, see what parameters they expect, and even try out real requests.
-
-### Using Pytest for Automated Testing
-```bash
-    pytest
-```
-
 # Getting Started
 **Clone the project from GitHub**:
    ```bash
