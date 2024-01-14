@@ -1,7 +1,7 @@
 # InvertedIndex
 
 # To run the following programn, the VS studio is needed. 
-    1. Visual Studio uses project files with extensions like .vcxproj for C++ projects instead of traditional Makefiles. To run the program tou need the C++ 17.
+## Visual Studio uses project files with extensions like .vcxproj for C++ projects instead of traditional Makefiles. To run the program tou need the C++ 17.
 
 
 # To run the python code:
