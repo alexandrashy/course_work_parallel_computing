@@ -3,10 +3,7 @@
 # To run the following programn, the VS studio is needed. 
 ## Visual Studio uses project files with extensions like .vcxproj for C++ projects instead of traditional Makefiles. To run the program you need the C++ 17.
 
-
-# To run the python code:
-# API Invert Index
-# Getting Started
+## Getting Started with Python code
 **Clone the project from GitHub**:
    ```bash
    git clone https://github.com/alexandrashy/course_work_parallel_computing.git
