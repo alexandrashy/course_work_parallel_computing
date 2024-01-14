@@ -51,7 +51,7 @@ std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::stri
             }
         }
     }
-    std::cout << "from vector ===" << prefix << "===" << suffix <<"\n";
+    //std::cout << "from vector ===" << prefix << "===" << suffix <<"\n";
     for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
         std::string filename = entry.path().filename().string();
         size_t pos = filename.find_first_of("_");
@@ -67,7 +67,7 @@ std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::stri
     if (documents.empty()) {
         std::cerr << "No documents was found." << std::endl;
     }
-    std::cout << documents.size() << "size\n";
+    //std::cout << documents.size() << "size\n";
     std::unordered_map<std::string, std::vector<std::string>> ReadVector = readDocumentsFromFile(documents);
     return ReadVector;
 }

@@ -57,7 +57,7 @@ class thread_pool
                 // Retrieve results from futures
                 for (int fut = 0; fut < child_threads_count; ++fut) {
                     std::unordered_map<std::string, std::vector<std::string>> result = futures[fut].get();
-                    std::ofstream outputFile("users_data\\" + task.USER_NAME + ".txt", std::ios::app);
+                    std::ofstream outputFile("users_data\\" + task.USER_NAME + std::to_string(fut) + ".txt", std::ios::app);
                     // Check if the file is opened successfully
                     for (const auto& pair : result) {
                         outputFile << '"' << pair.first << "\":";
@@ -69,9 +69,13 @@ class thread_pool
                     outputFile.close();
                 }
                 // Join the threads
+                auto payload_begin = high_resolution_clock::now();
                 for (int child_c = 0; child_c < child_threads_count; child_c++) {
                     child_threads[child_c].join();
                 }
+                auto payload_end = high_resolution_clock::now();
+                auto elapsed = duration_cast<nanoseconds>(payload_end - payload_begin);
+                std::cout << "\nPayload Time for joining: " << elapsed.count() * 1e-9 << " seconds.\n";
                 queues[i]->TryPop(task);
             }
             else

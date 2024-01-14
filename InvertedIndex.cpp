@@ -166,16 +166,13 @@ int parallel() {
         {"datasets\\aclimdb\\aclimdb\\train\\pos", "alexandra"},
         {"datasets\\aclimdb\\aclimdb\\train\\unsup", "aleksandra"}
     };
-    //for (const auto& User: Users) {
-    //    NewPool.submit(User);
-    //}
-    int count = 5;
-    thread_count = 5; //td::thread::hardware_concurrency()
-    child_threads_count = 3;
+    int count = 4;
+    thread_count = 4; //td::thread::hardware_concurrency()
+    child_threads_count = 25;
     auto payload_begin = high_resolution_clock::now();
     std::string UserName;
     std::vector<std::string> clients;
-    for (int i = 0; i < users.size(); i++) {
+    for (int i = 0; i < count; i++) {
         USER_DATA User = users[i];
         //std::cout << User.Path << User.USER_NAME << "\n";
         if (std::find(clients.begin(), clients.end(), User.USER_NAME) != clients.end()) {
@@ -194,27 +191,22 @@ int parallel() {
     //NewPool.submit(users[0]);
     //std::this_thread::sleep_for(std::chrono::seconds(50));
     std::filesystem::path DirectoryPath = "users_data\\";
-    std::cout << "here" << "\n";
-    while (std::distance(std::filesystem::directory_iterator(DirectoryPath), std::filesystem::directory_iterator{}) != count) {
+    //std::cout << "here" << "\n";
+    while (std::distance(std::filesystem::directory_iterator(DirectoryPath), std::filesystem::directory_iterator{}) != count*child_threads_count) {
         continue;
     }
     auto payload_end = high_resolution_clock::now();
-    
+    //std::this_thread::sleep_for(std::chrono::seconds(10));
     auto elapsed = duration_cast<nanoseconds>(payload_end - payload_begin);
     std::cout << "\nPayload Time: " << elapsed.count() * 1e-9 << " seconds.\n";
     return 0;
 }
 
-int consuqence(){
-
-    return 0;
-
-}
-
 
 
 int main() {
-    parallel();
+    //parallel();
+    server();
     return 0;
 }
 

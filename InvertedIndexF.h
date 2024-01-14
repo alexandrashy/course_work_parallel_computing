@@ -73,7 +73,6 @@ std::unordered_map<std::string, std::vector<std::string>> CreateInvertedIndex(st
 
     // Build the inverted index
     std::unordered_map<std::string, std::vector<std::string>> invertedIndex = buildInvertedIndex(documents);
-    std::cout << "Yes";
 
     return invertedIndex;
 }
