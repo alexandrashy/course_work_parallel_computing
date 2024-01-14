@@ -14,6 +14,7 @@
 #include "ThreadPool.h"
 #include "UserDataStructure.h"
 #include <filesystem>
+
 #pragma comment(lib, "ws2_32.lib") 
 
 
@@ -101,16 +102,13 @@ int server() {
         WSACleanup();
         return -1;
     }
-
-    // Listen for incoming connections
     if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
         std::cerr << "Error listening for connections\n";
         closesocket(serverSocket);
         WSACleanup();
         return -1;
     }
-
-    std::cout << "Server listening on port 8080...\n";
+    std::cout << "Server listening on port 8080!\n";
     // Accept a connection from a client
     while (true) {
         sockaddr_in clientAddress;
