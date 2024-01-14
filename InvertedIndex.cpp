@@ -158,7 +158,7 @@ int parallel() {
     //● aclImdb\train\unsup – N = 50000 файлів.
     thread_pool NewPool;
     std::vector<USER_DATA> users = {
-        {"C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\aclImdb\\test\\neg", "sasha"},
+        {"Cdatasets\\aclImdb\\aclImdb\\test\\neg", "sasha"},
         {"datasets\\aclimdb\\aclimdb\\test\\pos", "alex"},
         {"datasets\\aclimdb\\aclimdb\\train\\neg","oleksadnra"},
         {"datasets\\aclimdb\\aclimdb\\train\\pos", "alexandra"},
