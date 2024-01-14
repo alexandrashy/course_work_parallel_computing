@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 datasets/*
+/users_data/sasha0.txt
+/users_data/sasha1.txt
