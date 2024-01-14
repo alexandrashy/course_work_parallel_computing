@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <iterator>
 #include "vectorTest.h"
-
+#include <regex>
 using std::chrono::nanoseconds;
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
@@ -30,27 +30,27 @@ std::vector<std::string> tokenize(const std::string& str) {
 // Function to build the inverted index
 std::unordered_map<std::string, std::vector<std::string>> buildInvertedIndex(std::unordered_map<std::string, std::vector<std::string>>& documents) {
     std::unordered_map<std::string, std::vector<std::string>> invertedIndex;
-    for (auto a = documents.begin(); a != documents.end(); a++){
+    for (auto a = documents.begin(); a != documents.end(); a++){ // Починаємо зчитувати файл
         for (int i = 0; i < a->second.size(); ++i) {
             const std::string& document = a->second[i];
-            std::vector<std::string> words = tokenize(document);
+            std::vector<std::string> words = tokenize(document); // Розбиваємо на слова і заносимо у вектор
             for (const std::string& word : words) {
                 std::string lowercaseWord = word;
                 lowercaseWord.erase(std::remove_if(lowercaseWord.begin(), lowercaseWord.end(), [](unsigned char c) {
-                    return !std::isalpha(c);
+                    return !std::isalpha(c); // Прибираємо зайві символи, якщо наявні
                     }), lowercaseWord.end());
-                if (lowercaseWord.size() <= 1) { continue; }
+                if (lowercaseWord.size() <= 1) { continue; } 
                 
-                std::transform(lowercaseWord.begin(), lowercaseWord.end(), lowercaseWord.begin(), ::tolower);
+                std::transform(lowercaseWord.begin(), lowercaseWord.end(), lowercaseWord.begin(), ::tolower); // переводимо у нижній регістр
 
-                invertedIndex[lowercaseWord].push_back(a->first);
+                invertedIndex[lowercaseWord].push_back(a->first); // записуємо слово, разом з файлом, в якому воно зустрілося. 
             }
         }
     }
     return invertedIndex;
 }
 
-// Function to print the inverted index
+// Функція для виведення створеного інфертованого індексу
 void printInvertedIndex(const std::unordered_map<std::string, std::vector<int>>& invertedIndex) {
     int temp = 0;
     for (const auto& entry : invertedIndex) {
@@ -67,7 +67,7 @@ void printInvertedIndex(const std::unordered_map<std::string, std::vector<int>>&
 }
 
 std::unordered_map<std::string, std::vector<std::string>> CreateInvertedIndex(std::string folderPath, int i, int child_threads_count) {
-    // token();
+    // Визиваємо зчитування файлів
     std::unordered_map<std::string, std::vector<std::string>> documents = CreateVector(folderPath, i, child_threads_count);
     //(std::string folderPath, int numOfThread, int delimeter)
 

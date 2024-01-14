@@ -131,11 +131,9 @@
     <ClCompile Include="InvertedIndex.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h" />
     <ClInclude Include="InvertedIndexF.h" />
     <ClInclude Include="Join.h" />
     <ClInclude Include="SafeQueue.h" />
-    <ClInclude Include="Server.h" />
     <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="UserDataStructure.h" />
     <ClInclude Include="vectorTest.h" />

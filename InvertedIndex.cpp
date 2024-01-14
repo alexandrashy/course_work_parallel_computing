@@ -11,7 +11,6 @@
 #include <algorithm>
 #include <iterator>
 #include "vectorTest.h"
-#include "Header.h"
 #include "ThreadPool.h"
 #include "UserDataStructure.h"
 #include <filesystem>
@@ -57,7 +56,6 @@ std::string RandomStr(long int n) {
     std::string StringRev;
     std::mt19937 rng(std::random_device{}());
     std::uniform_int_distribution<int> distribution(97, 122);
-    // Use a while loop together with the getline() function to read the file line by line
     for (int i = 0; i < n; ++i) {
         char c = distribution(rng); // Generate a random character
         StringRev += c;
@@ -166,9 +164,9 @@ int parallel() {
         {"datasets\\aclimdb\\aclimdb\\train\\pos", "alexandra"},
         {"datasets\\aclimdb\\aclimdb\\train\\unsup", "aleksandra"}
     };
-    int count = 4;
-    thread_count = 4; //td::thread::hardware_concurrency()
-    child_threads_count = 25;
+    int count = 1;
+    thread_count = 1; //td::thread::hardware_concurrency()
+    child_threads_count = 2;
     auto payload_begin = high_resolution_clock::now();
     std::string UserName;
     std::vector<std::string> clients;
@@ -188,7 +186,6 @@ int parallel() {
             }
         }
     }
-    //NewPool.submit(users[0]);
     //std::this_thread::sleep_for(std::chrono::seconds(50));
     std::filesystem::path DirectoryPath = "users_data\\";
     //std::cout << "here" << "\n";
@@ -205,8 +202,8 @@ int parallel() {
 
 
 int main() {
-    //parallel();
-    server();
+    parallel();
+    //server();
     return 0;
 }
 
@@ -226,21 +223,21 @@ int main() {
 //#include "ThreadPool.h"
 
 //int main() {
-//    //std::unordered_map<std::string, std::vector<int>> InvertIn = CretaeInvertedIndex("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg");
+//    //std::unordered_map<std::string, std::vector<int>> InvertIn = CretaeInvertedIndex("InvertedIndex\\datasets\\aclImdb\\test\\neg");
 //    //printInvertedIndex(InvertIn);
-//    std::string filepath = "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
+//    std::string filepath = "InvertedIndex\\datasets\\aclImdb\\test\\neg";
 //    thread_pool NewPool;
 //    std::cout << "Created";
-//    // "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
-//       "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\unsup"
+//    // "InvertedIndex\\datasets\\aclImdb\\test\\neg";
+//       "InvertedIndex\\datasets\\aclImdb\\train\\unsup"
 //    //aclImdb\train\unsup
 //    //    aclImdb\train\pos
 //    //    aclImdb\train\neg
 //    //    aclImdb\test\pos
 //    bool isSub = NewPool.submit(filepath);
-//    NewPool.submit("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\unsup");
-//    NewPool.submit("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\pos");
-//    NewPool.submit("C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\train\\neg");
+//    NewPool.submit("InvertedIndex\\datasets\\aclImdb\\train\\unsup");
+//    NewPool.submit("datasets\\aclImdb\\train\\pos");
+//    NewPool.submit("datasets\\aclImdb\\train\\neg");
 //
 //    std::cout << isSub;
 //    return 0;

@@ -31,6 +31,7 @@ std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::stri
     std::vector<std::string> documents;
     int prefix = 750;
     int suffix = 1000;
+    // Обчислювання файлів за варіантом, якщо ми використовуємо паралелізацію 
     if (delimeter != 1) {
         prefix = 750 + numOfThread * (250 / delimeter);
         suffix = 750 + (numOfThread + 1) * (250 / delimeter) - 1;
@@ -71,8 +72,3 @@ std::unordered_map<std::string, std::vector<std::string>> CreateVector(std::stri
     std::unordered_map<std::string, std::vector<std::string>> ReadVector = readDocumentsFromFile(documents);
     return ReadVector;
 }
-// "C:\\Users\\Владелец\\Desktop\\курсова\\InvertedIndex\\datasets\\aclImdb\\test\\neg";
-//aclImdb\train\unsup
-//    aclImdb\train\pos
-//    aclImdb\train\neg
-//    aclImdb\test\pos
